@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelancer Toolkit | Professional Earnings Calculator</title>
+    <!-- Inter Font for modern SaaS look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.3);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --gradient-btn: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--card-bg); border-radius: 10px; }
+
+        /* --- Global Styles --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(56, 189, 248, 0.1);
+        }
+
+        h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: radial-gradient(circle at center, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-btn);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+
+        /* --- Forms & Inputs --- */
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-inputs { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        input, select {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* --- Results Grid --- */
+        .results-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .result-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* --- Insights Panel --- */
+        .insights-grid {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .insight-card {
+            min-width: 280px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(30, 41, 59, 0.5));
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px dashed var(--accent);
+        }
+
+        /* --- Share Section --- */
+        .share-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .share-btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--glass-border);
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .share-btn.wa { background: #25d36622; border-color: #25d366; }
+        .share-btn.tw { background: #1da1f222; border-color: #1da1f2; }
+        .share-btn.fb { background: #1877f222; border-color: #1877f2; }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: var(--bg-deep);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="copy-toast" class="copy-notification">Link copied!</div>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Freelancer Toolkit</h1>
+            <p>Powerful calculators for freelancers to know their real earnings. Avoid platform surprises and price your work like a pro.</p>
+            <a href="#calculators" class="btn-primary">Start Calculating</a>
+        </div>
+    </section>
+
+    <div class="container" id="calculators">
+        
+        <!-- 1. Client Price Calculator -->
+        <div class="glass-card">
+            <h2 class="section-title">💼 Client Price Calculator</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">What should you charge to take home your desired amount?</p>
+            <div class="grid-inputs">
+                <div class="input-group">
+                    <label>Desired Income ($)</label>
+                    <input type="number" id="desired-income" placeholder="e.g. 500" oninput="calculateClientPrice()">
+                </div>
+                <div class="input-group">
+                    <label>Platform</label>
+                    <select id="client-platform" onchange="calculateClientPrice()">
+                        <option value="0.20">Fiverr (20%)</option>
+                        <option value="0.10">Upwork (10%)</option>
+                        <option value="0.10">Freelancer.com (10%)</option>
+                        <option value="0.20">PeoplePerHour (20%)</option>
+                        <option value="0.09">Guru (9%)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="results-display">
+                <div class="result-box">
+                    <div class="result-label">Client Pays</div>
+                    <div class="result-value" id="res-client-pays">$0.00</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-label">Platform Fee</div>
+                    <div class="result-value" id="res-client-fee">$0.00</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-label">You Receive</div>
+                    <div class="result-value" id="res-client-receive">$0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Profit Calculator -->
+        <div class="glass-card">
+            <h2 class="section-title">💰 Net Profit Calculator</h2>
+            <div class="grid-inputs">
+                <div class="input-group">
+                    <label>Project Price ($)</label>
+                    <input type="number" id="profit-price" placeholder="e.g. 1000" oninput="calculateProfit()">
+                </div>
+                <div class="input-group">
+                    <label>Platform</label>
+                    <select id="profit-platform" onchange="calculateProfit()">
+                        <option value="0.20">Fiverr (20%)</option>
+                        <option value="0.10">Upwork (10%)</option>
+                        <option value="0.10">Freelancer.com (10%)</option>
+                        <option value="0.20">PeoplePerHour (20%)</option>
+                        <option value="0.09">Guru (9%)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Withdrawal Method</label>
+                    <select id="withdrawal-method" onchange="calculateProfit()">
+                        <option value="0.02">Payoneer (2%)</option>
+                        <option value="0.015">Wise (1.5%)</option>
+                        <option value="0.03">Bank Transfer (3%)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="results-display">
+                <div class="result-box">
+                    <div class="result-label">Platform Fee</div>
+                    <div class="result-value" id="p-res-platform">$0.00</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-label">Withdraw Fee</div>
+                    <div class="result-value" id="p-res-withdraw">$0.00</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-label">Final Profit</div>
+                    <div class="result-value" id="p-res-final">$0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Monthly Goal Calculator -->
+        <div class="glass-card">
+            <h2 class="section-title">🎯 Monthly Goal Calculator</h2>
+            <div class="grid-inputs">
+                <div class="input-group">
+                    <label>Income Goal ($)</label>
+                    <input type="number" id="monthly-goal" placeholder="e.g. 2000" oninput="calculateMonthlyGoal()">
+                </div>
+                <div class="input-group">
+                    <label>Primary Platform</label>
+                    <select id="goal-platform" onchange="calculateMonthlyGoal()">
+                        <option value="0.20">Fiverr (20%)</option>
+                        <option value="0.10">Upwork (10%)</option>
+                        <option value="0.00">Direct Client (0%)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="results-display">
+                <div class="result-box">
+                    <div class="result-label">Required Total Sales</div>
+                    <div class="result-value" id="res-total-sales">$0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Hourly Rate & Freelance Rate -->
+        <div class="glass-card">
+            <h2 class="section-title">⏱️ Rate Strategy Calculator</h2>
+            <div class="grid-inputs">
+                <div class="input-group">
+                    <label>Target Monthly ($)</label>
+                    <input type="number" id="rate-goal" placeholder="e.g. 3000" oninput="calculateFreelanceRate()">
+                </div>
+                <div class="input-group">
+                    <label>Hours per Week</label>
+                    <input type="number" id="rate-hours" value="40" oninput="calculateFreelanceRate()">
+                </div>
+                <div class="input-group">
+                    <label>Working Weeks / Month</label>
+                    <input type="number" id="rate-weeks" value="4" oninput="calculateFreelanceRate()">
+                </div>
+            </div>
+            <div class="results-display">
+                <div class="result-box">
+                    <div class="result-label">Hourly Rate</div>
+                    <div class="result-value" id="res-rate-hourly">$0.00</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-label">Avg Project (10hr)</div>
+                    <div class="result-value" id="res-rate-project">$0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Currency Converter -->
+        <div class="glass-card">
+            <h2 class="section-title">💱 Currency (USD to PKR)</h2>
+            <div class="input-group">
+                <label>Amount in USD</label>
+                <input type="number" id="usd-amt" placeholder="100" oninput="convertCurrency()">
+            </div>
+            <div class="results-display">
+                <div class="result-box">
+                    <div class="result-label">Equivalent in PKR</div>
+                    <div class="result-value" id="res-pkr">Rs 0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Gig Price Suggestion -->
+        <div class="glass-card">
+            <h2 class="section-title">🏷️ Gig Suggestion Tool</h2>
+            <div class="grid-inputs">
+                <div class="input-group">
+                    <label>Skill Category</label>
+                    <select id="skill-cat" onchange="suggestGigPrice()">
+                        <option value="gd">Graphic Design</option>
+                        <option value="ve">Video Editing</option>
+                        <option value="wd">Web Development</option>
+                        <option value="cw">Content Writing</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Experience Level</label>
+                    <select id="exp-lvl" onchange="suggestGigPrice()">
+                        <option value="1">Beginner</option>
+                        <option value="2">Intermediate</option>
+                        <option value="3">Expert</option>
+                    </select>
+                </div>
+            </div>
+            <div class="results-display">
+                <div class="result-box">
+                    <div class="result-label">Suggested Price Range</div>
+                    <div class="result-value" id="res-suggestion">$0 - $0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights -->
+        <div class="container">
+            <h2 class="section-title" style="font-size: 1.2rem;">⚡ Freelancer Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h4 style="color: var(--accent);">Tip #1</h4>
+                    <p style="font-size: 0.85rem; margin-top: 5px;">Most platforms charge 10–20% commission. Always bake this into your initial quote.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 style="color: var(--accent);">Tip #2</h4>
+                    <p style="font-size: 0.85rem; margin-top: 5px;">Withdrawal fees (2-3%) can eat your profit. Use Wise or direct bank transfers where possible.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 style="color: var(--accent);">Tip #3</h4>
+                    <p style="font-size: 0.85rem; margin-top: 5px;">Don't forget to account for 'Non-billable' hours like meetings and admin work in your rate.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Share Section -->
+        <div class="glass-card" style="text-align: center;">
+            <h3 style="margin-bottom: 20px;">Share This Tool With Others</h3>
+            <div class="share-buttons">
+                <button class="share-btn wa" onclick="share('whatsapp')">WhatsApp</button>
+                <button class="share-btn tw" onclick="share('twitter')">Twitter</button>
+                <button class="share-btn fb" onclick="share('facebook')">Facebook</button>
+                <button class="share-btn" onclick="copyLink()">Copy Link</button>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p><strong>Freelancer Toolkit</strong></p>
+        <p>Built for freelancers worldwide. All calculations are estimates.</p>
+    </footer>
+
+    <script>
+        /**
+         * Freelancer Toolkit - Business Logic
+         */
+
+        // Format Currency Utility
+        const fmt = (val) => {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            }).format(val);
+        };
+
+        // 1. Calculate Client Price
+        function calculateClientPrice() {
+            const desired = parseFloat(document.getElementById('desired-income').value) || 0;
+            const feePercent = parseFloat(document.getElementById('client-platform').value);
+            
+            const clientPrice = desired / (1 - feePercent);
+            const platformFee = clientPrice - desired;
+
+            document.getElementById('res-client-pays').innerText = fmt(clientPrice);
+            document.getElementById('res-client-fee').innerText = fmt(platformFee);
+            document.getElementById('res-client-receive').innerText = fmt(desired);
+        }
+
+        // 2. Calculate Net Profit
+        function calculateProfit() {
+            const price = parseFloat(document.getElementById('profit-price').value) || 0;
+            const platformFeePercent = parseFloat(document.getElementById('profit-platform').value);
+            const withdrawFeePercent = parseFloat(document.getElementById('withdrawal-method').value);
+
+            const platformFee = price * platformFeePercent;
+            const afterPlatform = price - platformFee;
+            const withdrawFee = afterPlatform * withdrawFeePercent;
+            const finalProfit = afterPlatform - withdrawFee;
+
+            document.getElementById('p-res-platform').innerText = fmt(platformFee);
+            document.getElementById('p-res-withdraw').innerText = fmt(withdrawFee);
+            document.getElementById('p-res-final').innerText = fmt(finalProfit);
+        }
+
+        // 3. Monthly Goal Calculator
+        function calculateMonthlyGoal() {
+            const goal = parseFloat(document.getElementById('monthly-goal').value) || 0;
+            const fee = parseFloat(document.getElementById('goal-platform').value);
+
+            const requiredSales = goal / (1 - fee);
+            document.getElementById('res-total-sales').innerText = fmt(requiredSales);
+        }
+
+        // 4. Freelance Rate Calculator
+        function calculateFreelanceRate() {
+            const goal = parseFloat(document.getElementById('rate-goal').value) || 0;
+            const hoursPerWeek = parseFloat(document.getElementById('rate-hours').value) || 1;
+            const weeksPerMonth = parseFloat(document.getElementById('rate-weeks').value) || 1;
+
+            const totalHours = hoursPerWeek * weeksPerMonth;
+            const hourlyRate = goal / totalHours;
+            const avgProjectRate = hourlyRate * 10; 
+
+            document.getElementById('res-rate-hourly').innerText = fmt(hourlyRate) + "/hr";
+            document.getElementById('res-rate-project').innerText = fmt(avgProjectRate);
+        }
+
+        // 5. USD to PKR Converter
+        function convertCurrency() {
+            const usd = parseFloat(document.getElementById('usd-amt').value) || 0;
+            const rate = 280; 
+            const pkr = usd * rate;
+
+            document.getElementById('res-pkr').innerText = "Rs " + pkr.toLocaleString();
+        }
+
+        // 6. Gig Price Suggestion Tool
+        function suggestGigPrice() {
+            const cat = document.getElementById('skill-cat').value;
+            const exp = parseInt(document.getElementById('exp-lvl').value);
+            
+            let base = { min: 5, max: 15 };
+
+            if (cat === 'gd') base = { min: 15, max: 40 };
+            if (cat === 've') base = { min: 25, max: 60 };
+            if (cat === 'wd') base = { min: 40, max: 100 };
+            if (cat === 'cw') base = { min: 10, max: 30 };
+
+            const finalMin = base.min * exp;
+            const finalMax = base.max * exp;
+
+            document.getElementById('res-suggestion').innerText = `${fmt(finalMin)} - ${fmt(finalMax)}`;
+        }
+
+        // Share Functions
+        function share(platform) {
+            const url = window.location.href;
+            const text = "Check out this awesome Freelancer Toolkit for calculating earnings!";
+            let shareUrl = '';
+
+            switch(platform) {
+                case 'whatsapp':
+                    shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + " " + url)}`;
+                    break;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                    break;
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                    break;
+            }
+            if (shareUrl) window.open(shareUrl, '_blank');
+        }
+
+        function copyLink() {
+            const url = window.location.href;
+            const textArea = document.createElement("textarea");
+            textArea.value = url;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                const toast = document.getElementById('copy-toast');
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 2000);
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Initialize on Load
+        window.onload = () => {
+            calculateClientPrice();
+            calculateProfit();
+            calculateMonthlyGoal();
+            calculateFreelanceRate();
+            convertCurrency();
+            suggestGigPrice();
+        };
+    </script>
+</body>
+</html>
